@@ -1,8 +1,8 @@
-This is a game from Computer Science Club of North Cross Xinhe.
+This is a game from Computer Science Club of North Cross Xinhe School.
 
-Version 1.0
+Version: 1.0
 
-Author Rose Alex Bolt
+Author: Rose Alex Bolt
 
-Final update Jan 10, 2018
+Final update: Jan 10, 2018
 
