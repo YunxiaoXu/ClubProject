@@ -96,16 +96,17 @@ function sucAlert(success){
 
 </head>
 <body onload="init()">
-
+<p onclick="window.location.href='/'">back</p>
+<hr/>
 <h1 align="center">The Game.</h1>
 
+<div align="center">
 <p>
 Shot the ball.
 <br/>
 <br/>
 <input type="button" value="new turn" onclick="rect();">
 </p>
-<hr />
 
 <canvas id="myCanvas" width="800" height="400" style="border:1px solid #c3c3c3;">
 Your browser does not support the canvas element.
@@ -117,10 +118,10 @@ Your browser does not support the canvas element.
   <br/>
   Direction:
   <input type="range" id="direction" min="0" max="90" style="width: 600px;">
+  <br/>
   <input type="button" value="type in" onclick="ball();">
 </form>
-
-
+</div>
 
 </body>
 </html>
