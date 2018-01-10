@@ -1,0 +1,126 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<script type="text/javascript">
+
+function init(){
+  var c=document.getElementById("myCanvas");
+  var cxt=c.getContext("2d");
+  cxt.fillStyle=" #000000";
+  cxt.beginPath();
+  cxt.arc(15,385,15,0,Math.PI*2,true);
+  cxt.closePath();
+  cxt.fill();
+}
+
+function rect(){
+  Y0=Math.random()*400;
+  var c=document.getElementById("myCanvas");
+  var cxt=c.getContext("2d");
+  cxt.clearRect(0,0,800,400);   
+  var c=document.getElementById("myCanvas");
+  var cxt=c.getContext("2d");
+  cxt.fillStyle=" #000000";
+  cxt.beginPath();
+  cxt.arc(15,385,15,0,Math.PI*2,true);
+  cxt.closePath();
+  cxt.fill();
+  cxt.fillStyle="#000000";
+  cxt.beginPath();
+  cxt.rect(750,Y0,50,15);
+  cxt.closePath();
+  cxt.fill();
+}
+
+var X0=750, X1=800;
+var Y0;
+var c=0;
+var i;
+var timer;
+var x;
+var y;
+
+function timedCount(){
+  var c=document.getElementById("myCanvas");
+  var cxt=c.getContext("2d");
+  var v=document.getElementById("effort").value;
+  var a=document.getElementById("direction").value;
+  cxt.beginPath();
+  var t=i/2.0;
+  x=getX(t,v,a);
+  if(x>=785){
+    clearInterval(timer);
+    sucAlert(success(x,y)); 
+  }
+  y=getY(t,v,a);
+  cxt.arc(x,y,15,0,Math.PI*2,true);
+  cxt.closePath();
+  cxt.fill();
+  i=i+1;
+}
+
+function getX(t,v,a){
+  return 15+Math.cos(geta(a))*v*t;
+}
+
+function getY(t,v,a){
+  return 385-(Math.sin(geta(a))*v*t)+9.8/2*t*t;
+}
+function geta(a){
+  var b = a / 180 * Math.PI;
+  return b;
+}
+
+function ball(){
+  i=0;
+  var c=document.getElementById("myCanvas");
+  var cxt=c.getContext("2d");
+  cxt.fillStyle="rgb("+(Math.random()*255)+","+(Math.random()*255)+","+(Math.random()*255)+")";  
+  timer=setInterval("timedCount()",100)
+}
+
+function success(getX, getY){
+  return (getX>=X0 && getX<=X1+100 && getY<=Y0 && getY>=Y0-30);
+}
+
+function sucAlert(success){
+  if(success){
+    alert("Congruatuation!!");
+  }else{
+    alert("Try again.");
+  }
+}
+
+
+</script>
+
+</head>
+<body onload="init()">
+
+<h1 align="center">The Game.</h1>
+
+<p>
+Shot the ball.
+<br/>
+<br/>
+<input type="button" value="new turn" onclick="rect();">
+</p>
+<hr />
+
+<canvas id="myCanvas" width="800" height="400" style="border:1px solid #c3c3c3;">
+Your browser does not support the canvas element.
+</canvas>
+
+<form action="/demo/demo_form.asp" method="get">
+  Efforts:
+  <input type="range" id="effort" min="0" max="200" style="width: 600px;">
+  <br/>
+  Direction:
+  <input type="range" id="direction" min="0" max="90" style="width: 600px;">
+  <input type="button" value="type in" onclick="ball();">
+</form>
+
+
+
+</body>
+</html>
