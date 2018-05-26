@@ -1,6 +1,6 @@
-This is a game from Computer Science Club of North Cross Xinhe School.
+This is a game from Computer Club of North Cross School Shanghai.
 
-Version: 1.0
+Version: 2.0
 
 Author: Rose Shawn Alex Bolt
 
