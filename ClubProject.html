@@ -1,7 +1,6 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-  <title>ClubProject</title>
   <link rel="icon" href="./favicon.ico" type="image/x-icon">
   <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
   <style type="text/css">
@@ -13,261 +12,119 @@
   </style>
 <script type="text/javascript">
 console.log("Author: Rose Guo")
-var g;
 
-// Create canvas and draw Ball
-function init(){
-  var c=document.getElementById("myCanvas");
-  var cxt=c.getContext("2d");
+var canvas;
+var cxt;
+var ballX = 15;
+var ballY = 385;
+var ballRad = 15;
+var mode;
+var tDraw;
+var rectX = function(){return mode==1?750:Math.sin(new Date().getTime()/573)*50+700}
+var rectY;
+var itv;
+var v;
+var degree;
+var t;
+
+function init() {
+  canvas = document.getElementById("myCanvas");
+  cxt = canvas.getContext("2d");
   cxt.fillStyle=" #000000";
   cxt.beginPath();
-  cxt.arc(15,385,15,0,Math.PI*2,true);
+  cxt.arc(ballX, ballY, ballRad, 0, Math.PI*2, true);
   cxt.closePath();
   cxt.fill();
 }
 
-// Draw the initial ball since rect() clears canvas
-function iniBall(){
-  var c=document.getElementById("myCanvas");
-  var cxt=c.getContext("2d");
-  cxt.fillStyle="#000000";
-  cxt.beginPath();
-  cxt.arc(15,385,15,0,Math.PI*2,true);
-  cxt.closePath();
-  cxt.fill();
-  cxt.fillStyle="#000000";
+function initGame1() {
+  mode = 1;
+  window.clearInterval(tDraw);
+  rectY=Math.random()*400;
+  tDraw = setInterval("drawCanvas();", 10);}
+
+function initGame2() {
+  mode = 2;
+  window.clearInterval(tDraw);
+  rectY=Math.random()*400;
+  tDraw = setInterval("drawCanvas();", 10);
 }
 
-// Choose Game Mode
-function gameChosed1(){
-  g=document.getElementById("game1").value; // value = 'game1'
-}
-
-function gameChosed2(){
-  g=document.getElementById("game2").value; // value = 'game2'
-}
-
-// set interval and initialize timer
-function ballShotChosed(){
-  if(g=="game1"){
-    i=0;
-    timer=setInterval("timedCount()",10);
-  }else{
-    t0=t;
-    timer1=setInterval("drawBall();suc2()",10);
-  }
-}
-
-<!-- game1 is rect -->
-
-var X0=750, X1=800;
-var Y0;
-var c=0; // ?
-var i;
-var timer, timer1;
-var x;
-var y;
-var m;
-var t;
-var t0;
-
-// Clear canvas and draw rect for game1
-function rect(){
-  var c=document.getElementById("myCanvas");
-  var cxt=c.getContext("2d");
-  cxt.clearRect(0,0,800,400);   
-  cxt.beginPath();
-  cxt.rect(750,Y0,50,15);
-  cxt.closePath();
-  cxt.fill();
-}
-
-// get x coordinate
-function getX(t,v,a){
-  return 15+Math.cos(geta(a))*v*t;
-}
-
-
-// get y coordinate
-function getY(t,v,a){
-  return 385-(Math.sin(geta(a))*v*t)+9.8/2*t*t;
-}
-
-
-// convert degree to radians
-function geta(a){
-  var b = a / 180 * Math.PI;
-  return b;
-}
-
-// Get value of effort and angle; Calculate the coordinates
-// at the moment; judge success; Draw ball; timing
-function timedCount(){
-  var c=document.getElementById("myCanvas");
-  var cxt=c.getContext("2d");
-  var v=document.getElementById("effort").value;
-  var a=document.getElementById("angle").value;
-  var t=i/10.0;
-  x=getX(t,v,a);
-  if(x>=785){
-    clearInterval(timer);
-    m=success(x,y);
-    sucAlert(m); 
-  }
-  y=getY(t,v,a);
-  rect();
-  cxt.beginPath();
-  cxt.arc(x,y,15,0,Math.PI*2,true);
-  cxt.closePath();
-  cxt.fill();
-  i=i+1;
-}
-
-// judge
-function success(getX, getY){
-  return (getX>=X0 && getX<=X1+100 && getY<=Y0 && getY>=Y0-30);
-}
-
-// alert
-function sucAlert(success){
-  if(success){
-    alert("Congruatuation!!");
-  }else{
-    alert("Try again.");
-  }
-}
-
-<!-- game2 is rect1 -->
-
-var tRect1;
-var I=0;
-var basketX;
-var X=15;
-var Y=385;
-
-// start interval: move rect
-function rect1(){
-  tRect1=setInterval("timedCount1();timedCount2();ball1();",10);
-}
-
-// change x coordinate for basket
-function changeX(){
-  basketX = Math.sin(getc(I))*50+700;
-}
-
-// convert ticks to radians of basket
-function getc(c){
-  var d = c / 180 * Math.PI;
-  return d;
-}
-
-// calculate time and tick and x for basket
-function timedCount1(){
-  t=I/10.0;
-  changeX();
-  I=I+1;
-}
-
-// clear; draw rect
-function timedCount2(){
-  var c=document.getElementById("myCanvas");
-  var cxt=c.getContext("2d");
+function drawCanvas() {
+  // rect
   cxt.clearRect(0,0,800,400);
   cxt.beginPath();
-  cxt.rect(basketX,Y0,50,15);
+  cxt.rect(rectX(),rectY,50,15);
   cxt.closePath();
   cxt.fill();
+  // ball
   cxt.fillStyle="#000000";
-}
-
-// calculate ball coordinates in air
-function drawBall(){
-  var v=document.getElementById("effort").value;
-  var a=document.getElementById("angle").value;
-  X=getX(t-t0,v,a);
-  Y=getY(t-t0,v,a);
-}
-
-// draw ball
-function ball1(){
-  var c=document.getElementById("myCanvas");
-  var cxt=c.getContext("2d");
   cxt.beginPath();
-  cxt.arc(X,Y,15,0,Math.PI*2,true);
+  cxt.arc(ballX, ballY, ballRad, 0, Math.PI*2, true);
   cxt.closePath();
   cxt.fill();
 }
 
-// success
-function suc2(){
-  if(X>=785){
-    clearInterval(timer1);
-    m=success1(X,Y);
-    sucAlert(m); 
+function shotBall() {
+  v = document.getElementById("effort").value;
+  degree = document.getElementById("angle").value;
+  t = 0;
+  itv = setInterval("refreshCanvas()", 10);
+}
+
+function refreshCanvas() {
+  var radians = degree / 180 * Math.PI;
+  ballX = 15 + Math.cos(radians) * v * t;
+  ballY = 385 - Math.sin(radians) * v * t + 0.5 * 9.8 * t ** 2;
+  t += 0.1;
+  var isSucc = (rectX()<ballX && ballX<rectX()+50 && rectY-15<ballY && ballY<rectY+10) || isSucc
+  console.log(rectX()<ballX, ballX<rectX()+50, rectY-15<ballY, ballY<rectY+15)
+  if (ballX > 785) {
+    clearInterval(itv);
+    alert(isSucc ? "Congruatuation!!" : "Try again.");
   }
 }
-
-// judge
-function success1(X, Y){
-  return (X>=basketX && X<=basketX+100 && Y<=Y0 && Y>=Y0-30);
-}
-
-<!-- cookie -->
-
-
 </script>
 </head>
+
 <body onload="init()">
+  <div class="header">
+    <span onclick="window.location.href='/'" id="back">back</span>
+  </div>
 
-<div class="header">
-<span onclick="window.location.href='/'" id="back">back</span>
-</div>
-<hr/>
+  <hr/>
 
-<h1 align="center">The Game.</h1>
+  <h1 align="center">The Game.</h1>
 
-<p>
-Shot the ball.
-<br/>
-You can choose game1 and game2 by click different button.
-<br/>
-Then you need to modify efforts and angles that are used to shot the ball by moving the button.
-<br/>
-Click the "type in" button to shot the ball.
-<br/>
-If the ball touch the black board the term give, then you succeed.
-<br/>
-<br/>
-<input type="button" id="game1" value="game1" onclick="gameChosed1();window.clearInterval(tRect1);Y0=Math.random()*400;rect();iniBall();">
-<input type="button" id="game2" value="game2" onclick="gameChosed2();window.clearInterval(tRect1);Y0=Math.random()*400;rect1();">
-</p>
-<hr />
+  <p class="introduction">
+    Shot the ball.<br/>
+    You can choose game1 and game2 by click different button.<br/>
+    Then you need to modify efforts and angles that are used to shot the ball by moving the button.<br/>
+    Click the "type in" button to shot the ball.<br/>
+    If the ball touch the black board the term give, then you succeed.<br/>
+    <br/>
+    <input type="button" id="game1" value="game1" onclick="initGame1()">
+    <input type="button" id="game2" value="game2" onclick="initGame2()">
+  </p>
 
-<canvas id="myCanvas" width="800" height="400" style="border:1px solid #c3c3c3;"></canvas>
+  <hr/>
 
-<!--
-<form action="/demo/demo_form.asp" method="get">
-  Efforts:
-  <input type="range" id="effort" min="0" max="200" style="width: 600px;">
-  <br/>
-  Angles:
-  <input type="range" id="angle" min="0" max="90" style="width: 600px;">
-  <input type="button" value="type in" onclick="ballShotChosed();">
-</form>-->
+  <canvas id="myCanvas" width="800" height="400" style="border:1px solid #c3c3c3;">
+   Your browser doesn't support canvas.
+  </canvas>
 
-<p>
-  Efforts:<br/>
-  <input type="range" id="effort" min="0" max="200" style="width: 600px;">
-  <br/>
-  Angles:<br/>
-  <input type="range" id="angle" min="0" max="90" style="width: 600px;">
-  <input type="button" value="type in" onclick="ballShotChosed();">
-</p>
+  <p class="control">
+    Efforts:<br/>
+   <input type="range" id="effort" min="0" max="200" style="width: 600px;">
+   <br/>
+   Angles:<br/>
+    <input type="range" id="angle" min="0" max="90" style="width: 600px;">
+    <input type="button" value="type in" onclick="shotBall();">
+  </p>
 
-<div class="footer">
-  <span id="school"><a href="http://www.northcross.cn/" target="_blank">North Cross School Shanghai</a></span>
-  <span id="copyright">© 2018 Rose, NCS Computer Club.<span>
-</div>
-
+  <div class="footer">
+    <span id="school"><a href="http://www.northcross.cn/" target="_blank">North Cross School Shanghai</a></span>
+    <span id="copyright">© 2018 Rose, NCS Computer Club.<span>
+  </div>
 </body>
 </html>
