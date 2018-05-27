@@ -88,7 +88,7 @@ function refreshCanvas() {
 //cookie
 function login() {
   var element = document.getElementById("user");
-  if (element.innerHTML=="login" || "visitor") {
+  if (element.innerHTML=="login" || element.innerHTML=="visitor") {
     //not login
     username = prompt("user name: ","visitor") || "visitor";
     element.innerHTML = username;
@@ -108,8 +108,8 @@ function setCookie(name, value, days) {
 
 function readCookie(name) {
   var cookie = document.cookie;
-  cookieList = cookie.split(";");
-  for (var i=0;i<cookie.length;i++) {
+  var cookieList = cookie.split("; ");
+  for (var i=0;i<cookieList.length;i++) {
     var c = cookieList[i].split("=");
     if (c[0]==name) {
       return c[1];
