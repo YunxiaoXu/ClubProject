@@ -5,8 +5,9 @@
   <link rel="icon" href="./favicon.ico" type="image/x-icon">
   <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
   <style type="text/css">
-  .header {margin:0;width:100%;box-sizing:border-box}
-  #back {}
+  .header {margin:0;height:20px;width:100%;box-sizing:border-box}
+  #back {float:left}
+  #user {float:right}
   .footer {margin:0;padding:0 20px 0 20px;width:100%;height:35px;box-sizing:border-box}
   #school {float:left;font-weight:400;line-height:35px}
   #copyright {color:#666;font-weight:400;line-height:35px;margin-right:24px;float:right}
@@ -27,8 +28,10 @@ var itv;
 var v;
 var degree;
 var t;
+var username;
 
 function init() {
+  //canvas
   canvas = document.getElementById("myCanvas");
   cxt = canvas.getContext("2d");
   cxt.fillStyle=" #000000";
@@ -36,16 +39,12 @@ function init() {
   cxt.arc(ballX, ballY, ballRad, 0, Math.PI*2, true);
   cxt.closePath();
   cxt.fill();
+  //cookie
+  document.getElementById("user").innerHTML = readCookie("username") || "login";
 }
 
-function initGame1() {
-  mode = 1;
-  window.clearInterval(tDraw);
-  rectY=Math.random()*400;
-  tDraw = setInterval("drawCanvas();", 10);}
-
-function initGame2() {
-  mode = 2;
+function initGame(m) {
+  mode = m;
   window.clearInterval(tDraw);
   rectY=Math.random()*400;
   tDraw = setInterval("drawCanvas();", 10);
@@ -78,11 +77,43 @@ function refreshCanvas() {
   ballX = 15 + Math.cos(radians) * v * t;
   ballY = 385 - Math.sin(radians) * v * t + 0.5 * 9.8 * t ** 2;
   t += 0.1;
-  var isSucc = (rectX()<ballX && ballX<rectX()+50 && rectY-15<ballY && ballY<rectY+10) || isSucc
-  console.log(rectX()<ballX, ballX<rectX()+50, rectY-15<ballY, ballY<rectY+15)
+  var isSucc = (rectX()<ballX && ballX<rectX()+50 && rectY-15<ballY && ballY<rectY+10) || isSucc;
+  console.log(rectX()<ballX, ballX<rectX()+50, rectY-15<ballY, ballY<rectY+15);
   if (ballX > 785) {
     clearInterval(itv);
     alert(isSucc ? "Congruatuation!!" : "Try again.");
+  }
+}
+
+//cookie
+function login() {
+  var element = document.getElementById("user");
+  if (element.innerHTML=="login" || "visitor") {
+    //not login
+    username = prompt("user name: ","visitor") || "visitor";
+    element.innerHTML = username;
+    setCookie("username", username, 365);
+  } else {
+    //already login
+    username = readCookie("username");
+    alert("Hello, "+username);
+  }
+}
+
+function setCookie(name, value, days) {
+  var expires = new Date();
+  expires.setDate(expires.getDate()+days);
+  document.cookie = name+"="+value+";expires="+ expires.toGMTString();
+}
+
+function readCookie(name) {
+  var cookie = document.cookie;
+  cookieList = cookie.split(";");
+  for (var i=0;i<cookie.length;i++) {
+    var c = cookieList[i].split("=");
+    if (c[0]==name) {
+      return c[1];
+    }
   }
 }
 </script>
@@ -90,7 +121,8 @@ function refreshCanvas() {
 
 <body onload="init()">
   <div class="header">
-    <span onclick="window.location.href='/'" id="back">back</span>
+    <span id="back" onclick="window.location.href='/'">back</span>
+    <span id="user" onclick="login();"></span>
   </div>
 
   <hr/>
@@ -104,8 +136,8 @@ function refreshCanvas() {
     Click the "type in" button to shot the ball.<br/>
     If the ball touch the black board the term give, then you succeed.<br/>
     <br/>
-    <input type="button" id="game1" value="game1" onclick="initGame1()">
-    <input type="button" id="game2" value="game2" onclick="initGame2()">
+    <input type="button" id="game1" value="game1" onclick="initGame(1)">
+    <input type="button" id="game2" value="game2" onclick="initGame(2)">
   </p>
 
   <hr/>
