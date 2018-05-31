@@ -1,6 +1,7 @@
 <!DOCTYPE HTML>
-<html>
+<html lang="en">
 <head>
+  <meta content="text/html"; charset="utf-8"/>
   <title>Club Project</title>
   <link rel="icon" href="./favicon.ico" type="image/x-icon">
   <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
@@ -13,7 +14,6 @@
   #copyright {color:#666;font-weight:400;line-height:35px;margin-right:24px;float:right}
   </style>
 <script type="text/javascript">
-console.log("Author: Rose Guo")
 
 var canvas;
 var cxt;
@@ -24,6 +24,8 @@ var mode;
 var tDraw;
 var rectX = function(){return mode==1?750:Math.sin(new Date().getTime()/573)*50+700}
 var rectY;
+var isCollide;
+var isSucc;
 var itv;
 var v;
 var degree;
@@ -69,6 +71,8 @@ function shotBall() {
   v = document.getElementById("effort").value;
   degree = document.getElementById("angle").value;
   t = 0;
+  isCollide = false;
+  isSucc = false;
   itv = setInterval("refreshCanvas()", 10);
 }
 
@@ -77,8 +81,9 @@ function refreshCanvas() {
   ballX = 15 + Math.cos(radians) * v * t;
   ballY = 385 - Math.sin(radians) * v * t + 0.5 * 9.8 * t ** 2;
   t += 0.1;
-  var isSucc = (rectX()<ballX && ballX<rectX()+50 && rectY-15<ballY && ballY<rectY+10) || isSucc;
-  console.log(rectX()<ballX, ballX<rectX()+50, rectY-15<ballY, ballY<rectY+15);
+  isCollide = (((ballX-rectX())**2+(ballY-rectY)**2)**0.5) < ballRad;
+  isSucc = (rectX()<ballX) && (ballX<rectX()+50) && (rectY-15<ballY) &&(ballY<rectY+10) && !isCollide || isSucc;
+  console.log(rectX()<ballX, ballX<rectX()+50, rectY-15<ballY, ballY<rectY+15, !isCollide, isSucc);
   if (ballX > 785) {
     clearInterval(itv);
     alert(isSucc ? "Congruatuation!!" : "Try again.");
@@ -87,7 +92,7 @@ function refreshCanvas() {
 
 //cookie
 function login() {
-  var element = document.getElementById("user");
+  var element = document.getElementById("user")
   if (element.innerHTML=="login" || element.innerHTML=="visitor") {
     //not login
     username = prompt("user name: ","visitor") || "visitor";
@@ -97,6 +102,9 @@ function login() {
     //already login
     username = readCookie("username");
     alert("Hello, "+username);
+  }
+  if (username!="login") {
+    postUser();
   }
 }
 
@@ -114,6 +122,17 @@ function readCookie(name) {
     if (c[0]==name) {
       return c[1];
     }
+  }
+}
+
+// POST
+function postUser() {
+  xhr = new XMLHttpRequest()
+  xhr.open("POST","/ClubProject/", true);
+  xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+  xhr.send('username='+username);
+  xhr.onload = function() {
+    console.log(xhr.responseText)
   }
 }
 </script>
@@ -156,8 +175,10 @@ function readCookie(name) {
   </p>
 
   <div class="footer">
-    <span id="school"><a href="http://www.northcross.cn/" target="_blank">North Cross School Shanghai</a></span>
-    <span id="copyright">© 2018 Rose, NCS Computer Club.<span>
+    <span id="school">
+      <a href="http://www.northcross.cn/" target="_blank">North Cross School Shanghai</a>
+    </span>
+    <span id="copyright">© 2018 NCSS Computer Club.<span>
   </div>
 </body>
 </html>
