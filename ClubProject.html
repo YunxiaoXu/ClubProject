@@ -1,8 +1,11 @@
 <!DOCTYPE HTML>
 <html lang="en">
 <head>
-  <meta content="text/html"; charset="utf-8"/>
+  <meta content="text/html" charset="utf-8"/>
   <title>Club Project</title>
+  <meta name="keywords" content="northcross, computerclub, 诺科, ClubProject, xuyunxiao, 徐云潇">
+  <meta name="description" content="NCSS Computer Club Project">
+  <meta name="renderer" content="webkit">
   <link rel="icon" href="./favicon.ico" type="image/x-icon">
   <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
   <style type="text/css">
@@ -92,7 +95,7 @@ function refreshCanvas() {
 
 //cookie
 function login() {
-  var element = document.getElementById("user")
+  var element = document.getElementById("user");
   if (element.innerHTML=="login" || element.innerHTML=="visitor") {
     //not login
     username = prompt("user name: ","visitor") || "visitor";
@@ -127,12 +130,19 @@ function readCookie(name) {
 
 // POST
 function postUser() {
-  xhr = new XMLHttpRequest()
+  xhr = new XMLHttpRequest();
   xhr.open("POST","/ClubProject/", true);
   xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-  xhr.send('username='+username);
+  var client_data = 'time='+new Date().toLocaleString()+'&username='+username;
+  client_data = encodeURIComponent(client_data);
+  xhr.send(client_data);
   xhr.onload = function() {
-    console.log(xhr.responseText)
+    var server_data = JSON.parse(xhr.response);
+    if (server_data.status==200) {
+      console.log(server_data.result);
+    } else {
+      console.log(server_data.message)
+    }
   }
 }
 </script>
