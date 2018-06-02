@@ -84,7 +84,7 @@ function refreshCanvas() {
   ballX = 15 + Math.cos(radians) * v * t;
   ballY = 385 - Math.sin(radians) * v * t + 0.5 * 9.8 * t ** 2;
   t += 0.1;
-  isCollide = (((ballX-rectX())**2+(ballY-rectY)**2)**0.5) < ballRad;
+  isCollide = ((((ballX-rectX())**2+( ballY-rectY)**2)**0.5) < ballRad) &&isCollide;
   isSucc = (rectX()<ballX) && (ballX<rectX()+50) && (rectY-15<ballY) &&(ballY<rectY+10) && !isCollide || isSucc;
   console.log(rectX()<ballX, ballX<rectX()+50, rectY-15<ballY, ballY<rectY+15, !isCollide, isSucc);
   if (ballX > 785) {
@@ -107,7 +107,20 @@ function login() {
     alert("Hello, "+username);
   }
   if (username!="login") {
-    postUser();
+    promise = post("/ClubProject/", "&username="+username);
+    promise.then(
+      data => {
+        var server_data = JSON.parse(data);
+        if (server_data.status==200) {
+          console.log(server_data.result);
+        } else {
+          console.log(server_data.message)
+        }
+      },
+      status => {
+        console.log("Error: "+status)
+      }
+    );
   }
 }
 
@@ -129,21 +142,24 @@ function readCookie(name) {
 }
 
 // POST
-function postUser() {
+function post(action, info) {
   xhr = new XMLHttpRequest();
-  xhr.open("POST","/ClubProject/", true);
-  xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-  var client_data = 'time='+new Date().toLocaleString()+'&username='+username;
-  client_data = encodeURIComponent(client_data);
-  xhr.send(client_data);
-  xhr.onload = function() {
-    var server_data = JSON.parse(xhr.response);
-    if (server_data.status==200) {
-      console.log(server_data.result);
-    } else {
-      console.log(server_data.message)
+  return new Promise (function (resolve, reject) {
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState == 4) {
+        if (xhr.status == 200) {
+          resolve(xhr.response);
+        } else {
+          reject(xhr.status)
+        }
+      }
     }
-  }
+    xhr.open("POST",action, true);
+    xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+    var client_data = 'time='+new Date().toLocaleString()+info;
+    client_data = encodeURIComponent(client_data);
+    xhr.send(client_data);
+  });
 }
 </script>
 </head>
